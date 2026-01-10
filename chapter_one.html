@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter One - Your Novel Title</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300;400;600&family=Cormorant+Garamond:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1a1a1a;
+            --paper: #f8f6f1;
+            --accent: #8b4513;
+            --muted: #6b5d53;
+            --shadow: rgba(26, 26, 26, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Pro', serif;
+            background: linear-gradient(135deg, var(--paper) 0%, #ebe8df 100%);
+            color: var(--ink);
+            line-height: 1.8;
+            overflow-x: hidden;
+        }
+
+        .grain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            opacity: 0.03;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='4' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            z-index: 1;
+        }
+
+        .nav-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(248, 246, 241, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px var(--shadow);
+            z-index: 100;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        .nav-content {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .back-link:hover {
+            color: var(--ink);
+            transform: translateX(-3px);
+        }
+
+        .back-link::before {
+            content: '←';
+            font-size: 1.2rem;
+        }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: var(--accent);
+            z-index: 101;
+            transition: width 0.1s ease;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 8rem 2rem 4rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .chapter-header {
+            text-align: center;
+            margin-bottom: 4rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.3s forwards;
+        }
+
+        .chapter-number {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 1rem;
+        }
+
+        .chapter-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 3rem;
+            font-weight: 300;
+            color: var(--ink);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.02em;
+        }
+
+        .chapter-divider {
+            width: 80px;
+            height: 1px;
+            background: var(--accent);
+            margin: 2rem auto;
+        }
+
+        .reading-content {
+            background: rgba(255, 255, 255, 0.6);
+            padding: 4rem;
+            border-radius: 2px;
+            box-shadow: 0 4px 30px var(--shadow);
+            backdrop-filter: blur(10px);
+            margin-bottom: 3rem;
+            opacity: 0;
+            animation: fadeInUp 1s ease-out 0.6s forwards;
+        }
+
+        .first-letter {
+            float: left;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 5rem;
+            line-height: 0.8;
+            margin: 0.1em 0.1em 0 0;
+            color: var(--accent);
+            font-weight: 400;
+        }
+
+        .reading-content p {
+            font-size: 1.2rem;
+            line-height: 2;
+            margin-bottom: 1.5rem;
+            text-align: justify;
+            text-indent: 2em;
+        }
+
+        .reading-content p:first-of-type {
+            text-indent: 0;
+        }
+
+        .reading-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .scene-break {
+            text-align: center;
+            margin: 3rem 0;
+            color: var(--accent);
+            font-size: 1.5rem;
+            letter-spacing: 1em;
+        }
+
+        .chapter-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 0;
+            opacity: 0;
+            animation: fadeIn 1s ease-out 0.9s forwards;
+        }
+
+        .nav-button {
+            padding: 1rem 2rem;
+            background: var(--accent);
+            color: var(--paper);
+            text-decoration: none;
+            font-family: 'Crimson Pro', serif;
+            font-size: 1rem;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(139, 69, 19, 0.3);
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(139, 69, 19, 0.4);
+        }
+
+        .nav-button.disabled {
+            background: var(--muted);
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .nav-button.disabled:hover {
+            transform: none;
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem 0;
+            color: var(--muted);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(139, 69, 19, 0.2);
+            margin-top: 4rem;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 6rem 1.5rem 2rem;
+            }
+
+            .reading-content {
+                padding: 2rem;
+            }
+
+            .chapter-title {
+                font-size: 2rem;
+            }
+
+            .reading-content p {
+                font-size: 1.1rem;
+                text-align: left;
+            }
+
+            .first-letter {
+                font-size: 4rem;
+            }
+
+            .chapter-nav {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .nav-button {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="grain"></div>
+    <div class="progress-bar" id="progressBar"></div>
+    
+    <nav class="nav-header">
+        <div class="nav-content">
+            <a href="homepage.html" class="back-link">Back to Home</a>
+            <div style="font-family: 'Cormorant Garamond', serif; color: var(--muted); font-size: 0.9rem;">
+                Chapter 1
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="chapter-header">
+            <div class="chapter-number">Chapter One</div>
+            <h1 class="chapter-title">A Normal day?</h1>
+            <div class="chapter-divider"></div>
+        </header>
+
+        <article class="reading-content">
+            <p>
+                <span class="first-letter">S</span>he woke before the alarm, light already in the room. The curtain was open, the morning pale and unfiltered, spreading evenly across the walls and the foot of the bed. For a moment she stayed still, letting her eyes adjust. Her head felt heavy—not aching, not dizzy, just weighted, as if it took a second longer than usual for thoughts to surface.
+
+Her younger daughter slept beside her, turned toward the wall, one arm tucked beneath the pillow. They shared the bed now, a king-sized one that felt too large at night and oddly cramped in the morning. She shifted carefully, mindful of the child’s breathing, and felt the familiar pressure of the shorts against her waist and thighs.
+
+She had chosen them on purpose the night before. They were never loose. She liked that about them—the way they held her, the certainty of their fit. Tight, but predictable. This morning, though, something felt wrong.
+
+She slid her hand down and touched the zipper. It wasn’t centered. It leaned slightly to one side—not open, not broken, just slanted. She tried to straighten it with two fingers, but the fabric resisted, pulling the angle back into place. The shorts themselves fit exactly as they always had. It was the zipper that unsettled her, the small refusal to align.
+
+She sat up slowly. The heaviness in her head shifted but didn’t lift.
+              <p>
+
+The room was simple. An embedded wardrobe lined one wall, its doors closed. A low dresser stood close to the end of the bed, leaving only a narrow gap. On her side, a small metal file cabinet served as a nightstand. Her laptop rested on top, lid closed. Beside it, a small camera sat upright, its indicator light on. She noticed this immediately and looked away.
+
+On the other side of the bed, a plastic nightstand held a tissue box and a cup with a few pens. Above the door, the metal bolt caught the light. The door was locked. The washroom door stood half open, the mirror inside already reflecting the morning.
+
+She stood and moved quietly to the window. Outside, the street was beginning to stir—early walkers, a passing car. She turned her body sideways and lowered herself into a half squat beside the bed, positioning herself carefully in front of the window but below its line of sight. Her movements were practiced, economical.
+
+She changed quickly. The pajama top came off first, then the shorts, folded and placed on the edge of the bed. She pulled on a blouse, buttoning it without looking, then stepped into long black pants, smoothing the fabric at the hips. The zipper closed straight this time. She did not pause to consider that.
+
+She stood, glanced once at the sleeping child, then crossed to the nightstand. She picked up her computer and slipped her phone into her pocket. The camera remained where it was, still on, its small light steady.
+
+She moved to the door, unlocked it, and lifted the bolt as quietly as possible. Before opening it, she paused—not listening for sound, but waiting for something inside herself to settle. It didn’t.
+
+She slipped out of the room and closed the door behind her, leaving the light, the bed, and the morning exactly as they were.
+            </p>
+        </article>
+
+        <nav class="chapter-nav">
+            <a href="homepage.html" class="nav-button">← Back to Home</a>
+            <a href="#" class="nav-button disabled">Next Chapter →</a>
+        </nav>
+
+        <footer>
+            <p>&copy; 2026 Sunny Wang. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Reading progress indicator
+        window.addEventListener('scroll', () => {
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight;
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const scrollPercent = (scrollTop / (documentHeight - windowHeight)) * 100;
+            
+            document.getElementById('progressBar').style.width = scrollPercent + '%';
+        });
+
+        // Smooth scroll behavior
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
